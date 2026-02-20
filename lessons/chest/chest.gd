@@ -23,6 +23,8 @@ func _ready()-> void:
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
 	canvas_group.material.set_shader_parameter("line_thickness", 3.0)
+	get_viewport().physics_object_picking_sort = true
+	get_viewport().physics_object_picking_first_only = true
 func _on_mouse_entered()-> void:
 	var tween := create_tween()
 	tween.tween_method(set_outline_thickness, 3.0, 6.0, 0.08)
@@ -41,6 +43,7 @@ func _spawn_random_item() -> void:
 	const FLIGHT_TIME := 0.4
 	const HALF_FLIGHT_TIME := FLIGHT_TIME / 2.0
 	var tween := create_tween()
+	tween.finished.connect(queue_free)
 	tween.set_trans(Tween.TRANS_QUAD)
 	tween.set_ease(Tween.EASE_OUT)
 	tween.set_parallel()
@@ -52,4 +55,4 @@ func _spawn_random_item() -> void:
 	tween.tween_property(loot_item, "position:y", land_position.y - jump_height, HALF_FLIGHT_TIME)
 	tween.set_ease(Tween.EASE_IN)
 	tween.tween_property(loot_item, "position:y", land_position.y, HALF_FLIGHT_TIME)
-	
+	tween.finished.connect(queue_free)
